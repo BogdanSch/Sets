@@ -39,14 +39,12 @@ public class SetTests
     }
 
     [Theory]
-    public void Set_Complement_ReturnSet()
+    [MemberData(nameof(ComplementTestData))]
+    public void Set_Complement_ReturnSet(Set setA, Set universalSet, Set expectedSet)
     {
-        Set setA = new Set(new List<int> { 1, 2, 3 });
-        Set universalSet = new Set(new List<int> { 1, 2, 3, 4, 5 });
-
         Set result = setA.Complement(universalSet);
 
-        result.Should().Be(new Set(new List<int> { 4, 5 }));
+        result.Should().Be(expectedSet);
     }
 
     [Fact]
@@ -66,5 +64,14 @@ public class SetTests
         Set result = Set.EvaluateExpression(expression, setsDict);
 
         result.Should().Be(new Set(new List<int> { 3, 5, 6, 7 }));
+    }
+    public static IEnumerable<object[]> ComplementTestData()
+    {
+        yield return new object[]
+        {
+            new Set(new List<int> { 1, 2, 3 }),
+            new Set(new List<int> { 1, 2, 3, 4, 5 }),
+            new Set(new List<int> { 4, 5 })
+        };
     }
 }

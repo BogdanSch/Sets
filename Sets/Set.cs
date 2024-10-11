@@ -6,7 +6,7 @@
     {
         public List<int> Numbers { get; set; } = new List<int>();
         private char _connectionCharacter = ',';
-        private static string[] _setOperations = { "intersection", "union" };
+        //private static string[] _setOperations = { "intersection", "union", "difference", "complement" };
     
         public Set(List<int> numbers)
         {
@@ -106,9 +106,9 @@
             {
                 queue.Enqueue(setDictionary[token]);
             }
-            else if (_setOperations.Contains(token))
+            else if (Enum.TryParse(typeof(SetOperation), token, true, out var operation))
             {
-                queue.Enqueue(token);
+                queue.Enqueue((SetOperation)operation);
             }
         }
 
@@ -117,7 +117,7 @@
         while (queue.Count > 1)
         {
             Set setA, setB;
-            string operant;
+            SetOperation operant;
 
             if(resultSetStack.Count > 0)
             {
@@ -127,17 +127,25 @@
             {
                 setA = (Set)queue.Dequeue();
             }
-            operant = (string)queue.Dequeue();
+            operant = (SetOperation)queue.Dequeue();
             setB = (Set)queue.Dequeue();
 
             Set result;
-            if (operant == _setOperations[0])
+            if (operant == SetOperation.Intersection)
             {
                 result = setA.Intersection(setB);
             }
-            else if (operant == _setOperations[1])
+            else if (operant == SetOperation.Union)
             {
                 result = setA.Union(setB);
+            }
+            else if (operant == SetOperation.Difference)
+            {
+                result = setA.Difference(setB);
+            }
+            else if (operant == SetOperation.Complement)
+            {
+                result = setA.Complement(setB);
             }
             else
             {
@@ -157,17 +165,6 @@
         return stringBuilder.ToString();
     }
 
-    //public bool CompareSet(Set setToCompare)
-    //{
-    //    if (setToCompare.Numbers.Count != Numbers.Count) return false;
-
-    //    for (int i = 0; i < Numbers.Count; i++)
-    //    {
-    //        if (setToCompare.Numbers[i] != Numbers[i]) return false;
-    //    }
-
-    //    return true;
-    //}
     public bool CompareSet(Set setToCompare)
     {
         return new HashSet<int>(Numbers).SetEquals(setToCompare.Numbers);

@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using Sets;
 
 namespace Sets.UnitTests.SetTests;
 

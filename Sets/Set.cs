@@ -6,7 +6,6 @@
     {
         public List<int> Numbers { get; set; } = new List<int>();
         private char _connectionCharacter = ',';
-        //private static string[] _setOperations = { "intersection", "union", "difference", "complement" };
     
         public Set(List<int> numbers)
         {

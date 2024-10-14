@@ -63,6 +63,21 @@ public class SetTests
 
         result.Should().Be(new Set<int>(new List<int> { 3, 5, 6, 7 }));
     }
+    [Fact]
+    public void Set_CartesianProduct_ReturnSet()
+    {
+        Set<int> setA = new Set<int>(new List<int> { 1, 2 });
+        Set<char> setB = new Set<char>(new List<char> { 'a', 'b' });
+
+        Set<(int, char)> result = setA.CartesianProduct(setB);
+
+        Set<(int, char)> expected = new Set<(int, char)>(new List<(int, char)>
+        {
+            (1, 'a'), (1, 'b'), (2, 'a'), (2, 'b')
+        });
+
+        result.Should().BeEquivalentTo(expected);
+    }
     public static IEnumerable<object[]> ComplementTestData()
     {
         yield return new object[]

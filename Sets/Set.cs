@@ -96,19 +96,6 @@ public class Set<T>
         return complementSet;
     }
 
-    public Set<(T, U)> CartesianProduct<U>(Set<U> otherSet)
-    {
-        Set<(T, U)> productSet = new Set<(T, U)>();
-        foreach (T elementA in this.Elements)
-        {
-            foreach (U elementB in otherSet.Elements)
-            {
-                productSet.AddElement((elementA, elementB));
-            }
-        }
-        return productSet;
-    }
-
     public static Set<T> EvaluateExpression(string expression, Dictionary<string, Set<T>> setDictionary)
     {
         string[] tokens = expression.Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -159,8 +146,18 @@ public class Set<T>
 
         return resultSetStack.Pop();
     }
-
-    //public Set<T> C
+    public Set<(T, U)> CartesianProduct<U>(Set<U> otherSet)
+    {
+        Set<(T, U)> productSet = new Set<(T, U)>();
+        foreach (T elementA in this.Elements)
+        {
+            foreach (U elementB in otherSet.Elements)
+            {
+                productSet.AddElement((elementA, elementB));
+            }
+        }
+        return productSet;
+    }
 
     public override string ToString()
     {

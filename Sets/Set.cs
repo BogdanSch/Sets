@@ -1,100 +1,115 @@
-﻿    using System.Text;
+﻿using System.Text;
 
-    namespace Sets;
+namespace Sets;
 
-    public class Set
+public class Set<T>
+{
+    public List<T> Elements { get; set; } = new List<T>();
+    private char _connectionCharacter = ',';
+
+    public Set(List<T> elements)
     {
-        public List<int> Numbers { get; set; } = new List<int>();
-        private char _connectionCharacter = ',';
-    
-        public Set(List<int> numbers)
-        {
-            Numbers = numbers;
-        }
-        public Set(int[] numbers)
-        {
-            CreateSet(numbers);
-        }
-        public Set() : this(new List<int>()) { }
-    
-        public bool ContainsElement(int number) => Numbers.Contains(number);
-        public void CreateSet(int[] numbers)
-        {
-            Numbers = new List<int>();
-            AddElements(numbers);
-        }
-        public void AddElement(int numberToAdd)
-        {
-            if (!ContainsElement(numberToAdd))
-                {
-                    Numbers.Add(numberToAdd);
-                }
-        }
-        public void AddElements(int[] numbersToAdd)
-        {
-            for (int i = 0; i < numbersToAdd.Length; i++)
-            {
-                if (!ContainsElement(numbersToAdd[i]))
-                {
-                    Numbers.Add(numbersToAdd[i]);
-                }
-            }
-        }
-        public void RemoveElement(int numberToRemove)
-        {
-            Numbers.Remove(numberToRemove);
-        }
+        Elements = elements;
+    }
 
-        public Set Union(Set otherSet) 
+    public Set(T[] elements)
+    {
+        CreateSet(elements);
+    }
+
+    public Set() : this(new List<T>()) { }
+
+    public bool ContainsElement(T element) => Elements.Contains(element);
+
+    public void CreateSet(T[] elements)
+    {
+        Elements = new List<T>();
+        AddElements(elements);
+    }
+
+    public void AddElement(T elementToAdd)
+    {
+        if (!ContainsElement(elementToAdd))
         {
-            Set unionSet = new Set(this.Numbers);
-            unionSet.AddElements(otherSet.Numbers.ToArray());
-            unionSet.Numbers = unionSet.Numbers.OrderBy(n => n).ToList();
+            Elements.Add(elementToAdd);
+        }
+    }
+
+    public void AddElements(T[] elementsToAdd)
+    {
+        foreach (var element in elementsToAdd)
+        {
+            AddElement(element);
+        }
+    }
+
+    public void RemoveElement(T elementToRemove)
+    {
+        Elements.Remove(elementToRemove);
+    }
+
+    public Set<T> Union(Set<T> otherSet)
+    {
+        Set<T> unionSet = new Set<T>(this.Elements);
+        unionSet.AddElements(otherSet.Elements.ToArray());
+        unionSet.Elements = unionSet.Elements.OrderBy(e => e).ToList();
         return unionSet;
-        }
+    }
 
-        public Set Intersection(Set otherSet)
+    public Set<T> Intersection(Set<T> otherSet)
+    {
+        Set<T> intersectionSet = new Set<T>();
+        foreach (T element in Elements)
         {
-            Set intersectionSet = new Set();
-            foreach (int number in Numbers)
+            if (otherSet.ContainsElement(element))
             {
-                if (otherSet.ContainsElement(number))
-                {
-                    intersectionSet.AddElement(number);
-                }
+                intersectionSet.AddElement(element);
             }
-            intersectionSet.Numbers = intersectionSet.Numbers.OrderBy(n => n).ToList();
-            return intersectionSet;
         }
+        intersectionSet.Elements = intersectionSet.Elements.OrderBy(e => e).ToList();
+        return intersectionSet;
+    }
 
-        public Set Difference(Set otherSet)
+    public Set<T> Difference(Set<T> otherSet)
+    {
+        Set<T> differenceSet = new Set<T>();
+        foreach (T element in Elements)
         {
-            Set differenceSet = new Set();
-            foreach (int number in Numbers)
+            if (!otherSet.ContainsElement(element))
             {
-                if (!otherSet.ContainsElement(number))
-                {
-                    differenceSet.AddElement(number);
-                }
+                differenceSet.AddElement(element);
             }
-            return differenceSet;
         }
-        public Set Complement(Set universalSet)
+        return differenceSet;
+    }
+
+    public Set<T> Complement(Set<T> universalSet)
+    {
+        Set<T> complementSet = new Set<T>();
+        foreach (T element in universalSet.Elements)
         {
-            Set complementSet = new Set();
-
-            foreach (int number in universalSet.Numbers)
+            if (!ContainsElement(element))
             {
-                if (!ContainsElement(number))
-                {
-                    complementSet.AddElement(number);
-                }
+                complementSet.AddElement(element);
             }
-
-            return complementSet;
         }
+        return complementSet;
+    }
 
-    public static Set EvaluateExpression(string expression, Dictionary<string, Set> setDictionary)
+    public Set<(T, U)> CartesianProduct<U>(Set<U> otherSet)
+    {
+        Set<(T, U)> productSet = new Set<(T, U)>();
+        foreach (T elementA in this.Elements)
+        {
+            foreach (U elementB in otherSet.Elements)
+            {
+                productSet.AddElement((elementA, elementB));
+            }
+        }
+        return productSet;
+    }
+
+    public static Set<T> EvaluateExpression(string expression, Dictionary<string, Set<T>> setDictionary)
     {
         string[] tokens = expression.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         Queue<object> queue = new Queue<object>();
@@ -111,45 +126,33 @@
             }
         }
 
-        Stack<Set> resultSetStack = new Stack<Set>();
+        Stack<Set<T>> resultSetStack = new Stack<Set<T>>();
 
         while (queue.Count > 1)
         {
-            Set setA, setB;
-            SetOperation operant;
+            Set<T> setA, setB;
+            SetOperation operation;
 
-            if(resultSetStack.Count > 0)
+            if (resultSetStack.Count > 0)
             {
                 setA = resultSetStack.Pop();
             }
             else
             {
-                setA = (Set)queue.Dequeue();
+                setA = (Set<T>)queue.Dequeue();
             }
-            operant = (SetOperation)queue.Dequeue();
-            setB = (Set)queue.Dequeue();
 
-            Set result;
-            if (operant == SetOperation.Intersection)
+            operation = (SetOperation)queue.Dequeue();
+            setB = (Set<T>)queue.Dequeue();
+
+            Set<T> result = operation switch
             {
-                result = setA.Intersection(setB);
-            }
-            else if (operant == SetOperation.Union)
-            {
-                result = setA.Union(setB);
-            }
-            else if (operant == SetOperation.Difference)
-            {
-                result = setA.Difference(setB);
-            }
-            else if (operant == SetOperation.Complement)
-            {
-                result = setA.Complement(setB);
-            }
-            else
-            {
-                throw new InvalidOperationException($"Error: Unsupported operation: {operant}");
-            }
+                SetOperation.Intersection => setA.Intersection(setB),
+                SetOperation.Union => setA.Union(setB),
+                SetOperation.Difference => setA.Difference(setB),
+                SetOperation.Complement => setA.Complement(setB),
+                _ => throw new InvalidOperationException($"Unsupported operation: {operation}")
+            };
 
             resultSetStack.Push(result);
         }
@@ -157,23 +160,23 @@
         return resultSetStack.Pop();
     }
 
+    //public Set<T> C
+
     public override string ToString()
     {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.Append("[" + String.Join(_connectionCharacter, this.Numbers.ToArray()) + "]");
+        stringBuilder.Append("[" + String.Join(_connectionCharacter, this.Elements) + "]");
         return stringBuilder.ToString();
     }
 
-    public bool CompareSet(Set setToCompare)
+    public bool CompareSet(Set<T> setToCompare)
     {
-        return new HashSet<int>(Numbers).SetEquals(setToCompare.Numbers);
+        return new HashSet<T>(Elements).SetEquals(setToCompare.Elements);
     }
 
     public override bool Equals(object? obj)
     {
-        Set set = obj as Set;
-
-        if (set != null) 
+        if (obj is Set<T> set)
         {
             return CompareSet(set);
         }
@@ -182,7 +185,6 @@
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(Numbers, _connectionCharacter);
+        return HashCode.Combine(Elements, _connectionCharacter);
     }
 }
-

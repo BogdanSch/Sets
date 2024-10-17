@@ -158,7 +158,58 @@ public class Set<T>
         }
         return productSet;
     }
+    public bool IsRelationValid<U>(List<(T, U)> relation, Set<U> setB)
+    {
+        Set<(T, U)> cartesianProduct = this.CartesianProduct(setB);
 
+        foreach ((T, U) pair in relation)
+        {
+            if (!cartesianProduct.Elements.Contains(pair))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    public Set<(T, T)> FindRelations(Func<T, T, bool> relationFunc)
+    {
+        Set<(T, T)> relationSet = new Set<(T, T)>();
+
+        foreach (T elementA in this.Elements)
+        {
+            foreach (T elementB in this.Elements)
+            {
+                if (relationFunc(elementA, elementB))
+                {
+                    relationSet.AddElement((elementA, elementB));
+                }
+            }
+        }
+
+        return relationSet;
+    }
+    public Set<(T, T)> FilteredCartesianProduct(Set<T> otherSet, Func<T, T, bool> filterFunc)
+    {
+        Set<(T, T)> relationSet = new Set<(T, T)>();
+
+        foreach (T elementA in this.Elements)
+        {
+            foreach (T elementB in otherSet.Elements)
+            {
+                if (filterFunc(elementA, elementB))
+                {
+                    relationSet.AddElement((elementA, elementB));
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        return relationSet;
+    }
     public override string ToString()
     {
         StringBuilder stringBuilder = new StringBuilder();

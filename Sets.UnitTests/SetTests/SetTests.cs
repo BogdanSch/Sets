@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using System.Collections.Generic;
 
 namespace Sets.UnitTests.SetTests;
 
@@ -69,13 +70,52 @@ public class SetTests
         Set<int> setA = new Set<int>(new List<int> { 1, 2 });
         Set<char> setB = new Set<char>(new List<char> { 'a', 'b' });
 
-        Set<(int, char)> result = setA.CartesianProduct(setB);
+        Set<(int, char)> result = setA.CartesianProduct<char>(setB);
 
         Set<(int, char)> expected = new Set<(int, char)>(new List<(int, char)>
         {
             (1, 'a'), (1, 'b'), (2, 'a'), (2, 'b')
         });
+        result.Should().BeEquivalentTo(expected);
+    }
+    [Fact]
+    public void Set_IsRelationValid_ReturnTrue()
+    {
+        var relation = new List<(int, char)> { (1, 'a'), (2, 'b') };
+        var setA = new Set<int>(new List<int> { 1, 2 });
+        var setB = new Set<char>(new List<char> { 'a', 'b' });
 
+        bool isValid = setA.IsRelationValid(relation, setB);
+
+        isValid.Should().BeTrue();
+    }
+    [Fact]
+    public void Set_FindRelations_ReturnsCorrectSet()
+    {
+        Set<int> setA = new Set<int>(new List<int> { 1, 2, 3, 4, 6 });
+        Func<int, int, bool> isDivisible = (a, b) => a != b && a % b == 0;
+
+        Set<(int, int)> result = setA.FindRelations(isDivisible);
+
+        Set<(int, int)> expected = new Set<(int, int)>(new List<(int, int)>
+        {
+            (2, 1), (3, 1), (4, 1), (4, 2), (6, 1), (6, 2), (6, 3) //Ask about the expected output
+        });
+        result.Should().BeEquivalentTo(expected);
+    }
+    [Fact]
+    public void Set_FilteredCartesianProduct_ReturnsCorrectSet()
+    {
+        Set<int> setA = new Set<int>(new List<int> { 1, 2, 3 });
+        Set<int> setB = new Set<int>(new List<int> { 3, 4, 5 });
+        Func<int, int, bool> isLess = (a, b) => a < b && a != b;
+
+        Set<(int, int)> result = setA.FilteredCartesianProduct(setB, isLess);
+
+        Set<(int, int)> expected = new Set<(int, int)>(new List<(int, int)>
+        {
+            (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5)
+        });
         result.Should().BeEquivalentTo(expected);
     }
     public static IEnumerable<object[]> ComplementTestData()

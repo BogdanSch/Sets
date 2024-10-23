@@ -146,23 +146,23 @@ public class Set<T>
 
         return resultSetStack.Pop();
     }
-    public Set<(T, U)> CartesianProduct<U>(Set<U> otherSet)
+    public Set<(T1, T2)> CartesianProduct<T2>(Set<T2> otherSet)
     {
-        Set<(T, U)> productSet = new Set<(T, U)>();
-        foreach (T elementA in this.Elements)
+        Set<(T1, T2)> productSet = new Set<(T1, T2)>();
+        foreach (T1 elementA in this.Elements)
         {
-            foreach (U elementB in otherSet.Elements)
+            foreach (T2 elementB in otherSet.Elements)
             {
                 productSet.AddElement((elementA, elementB));
             }
         }
         return productSet;
     }
-    public bool IsRelationValid<U>(List<(T, U)> relation, Set<U> setB)
+    public bool IsRelationValid<T2>(List<(T1, T2)> relation, Set<T2> setB)
     {
-        Set<(T, U)> cartesianProduct = this.CartesianProduct(setB);
+        Set<(T1, T2)> cartesianProduct = this.CartesianProduct(setB);
 
-        foreach ((T, U) pair in relation)
+        foreach ((T1, T2) pair in relation)
         {
             if (!cartesianProduct.Elements.Contains(pair))
             {

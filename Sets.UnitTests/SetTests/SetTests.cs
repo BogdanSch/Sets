@@ -70,7 +70,7 @@ public class SetTests
         Set<int> setA = new Set<int>(new List<int> { 1, 2 });
         Set<char> setB = new Set<char>(new List<char> { 'a', 'b' });
 
-        Set<(int, char)> result = setA.CartesianProduct<char>(setB);
+        Set<(int, char)> result = setA.CartesianProduct(setB);
 
         Set<(int, char)> expected = new Set<(int, char)>(new List<(int, char)>
         {
@@ -99,7 +99,7 @@ public class SetTests
 
         Set<(int, int)> expected = new Set<(int, int)>(new List<(int, int)>
         {
-            (2, 1), (3, 1), (4, 1), (4, 2), (6, 1), (6, 2), (6, 3) //Ask about the expected output
+            (2, 1), (3, 1), (4, 1), (4, 2), (6, 1), (6, 2), (6, 3) //Ask about the expected output (3, 1)
         });
         result.Should().BeEquivalentTo(expected);
     }
@@ -108,7 +108,7 @@ public class SetTests
     {
         Set<int> setA = new Set<int>(new List<int> { 1, 2, 3 });
         Set<int> setB = new Set<int>(new List<int> { 3, 4, 5 });
-        Func<int, int, bool> isLess = (a, b) => a < b && a != b;
+        Func<int, int, bool> isLess = (a, b) => a < b;// && a != b;
 
         Set<(int, int)> result = setA.FilteredCartesianProduct(setB, isLess);
 

@@ -79,7 +79,7 @@ public class SetTests
         result.Should().BeEquivalentTo(expected);
     }
     [Fact]
-    public void Set_IsRelationValid_ReturnTrue()
+    public void Set_IsRelationValid_ReturnBool()
     {
         var relation = new List<(int, char)> { (1, 'a'), (2, 'b') };
         var setA = new Set<int>(new List<int> { 1, 2 });
@@ -90,7 +90,7 @@ public class SetTests
         isValid.Should().BeTrue();
     }
     [Fact]
-    public void Set_FindRelations_ReturnsCorrectSet()
+    public void Set_FindRelations_ReturnSet()
     {
         Set<int> setA = new Set<int>(new List<int> { 1, 2, 3, 4, 6 });
         Func<int, int, bool> isDivisible = (a, b) => a != b && a % b == 0;
@@ -104,7 +104,7 @@ public class SetTests
         result.Should().BeEquivalentTo(expected);
     }
     [Fact]
-    public void Set_FilteredCartesianProduct_ReturnsCorrectSet()
+    public void Set_FilteredCartesianProduct_ReturnSet()
     {
         Set<int> setA = new Set<int>(new List<int> { 1, 2, 3 });
         Set<int> setB = new Set<int>(new List<int> { 3, 4, 5 });
@@ -117,6 +117,32 @@ public class SetTests
             (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5)
         });
         result.Should().BeEquivalentTo(expected);
+    }
+    //[Theory]
+    //[MemberData(nameof(ComplementTestData))]
+    [Fact]
+    public void Set_IsRelationReflexive_ReturnBool()
+    {
+        Set<int> set = new Set<int>(new List<int> { 1, 2, 3 });
+        Set<(int, int)> relation = new(new List<(int, int)>
+            {
+                (1, 1), (2, 2), (3, 3)
+            });
+
+        bool result = set.IsRelationReflexive(relation);
+
+        result.Should().BeTrue();
+    }
+    [Fact]
+    public void Set_IsRelationSymmetric_ReturnBool()
+    {
+        Set<(int, int)> relation = new Set<(int, int)>(new List<(int, int)>
+            {(1, 2), (2, 1), (3, 3)}
+        );
+
+        bool result = Set<int>.IsRelationSymmetric(relation);
+
+        result.Should().BeTrue();
     }
     public static IEnumerable<object[]> ComplementTestData()
     {

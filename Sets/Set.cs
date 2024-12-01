@@ -1,11 +1,14 @@
-﻿using System.Text;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Sets;
 
-public class Set<T>
+public class Set<T>// : IEnumerable<T>
 {
     public List<T> Elements { get; set; } = new List<T>();
-    private char _connectionCharacter = ',';
+    private readonly char CONNECTION_CHARACTER = ',';
 
     public Set(List<T> elements)
     {
@@ -42,12 +45,10 @@ public class Set<T>
             AddElement(element);
         }
     }
-
     public void RemoveElement(T elementToRemove)
     {
         Elements.Remove(elementToRemove);
     }
-
     public Set<T> Union(Set<T> otherSet)
     {
         Set<T> unionSet = new Set<T>(this.Elements);
@@ -55,7 +56,6 @@ public class Set<T>
         unionSet.Elements = unionSet.Elements.OrderBy(e => e).ToList();
         return unionSet;
     }
-
     public Set<T> Intersection(Set<T> otherSet)
     {
         Set<T> intersectionSet = new Set<T>();
@@ -69,7 +69,6 @@ public class Set<T>
         intersectionSet.Elements = intersectionSet.Elements.OrderBy(e => e).ToList();
         return intersectionSet;
     }
-
     public Set<T> Difference(Set<T> otherSet)
     {
         Set<T> differenceSet = new Set<T>();
@@ -82,7 +81,6 @@ public class Set<T>
         }
         return differenceSet;
     }
-
     public Set<T> Complement(Set<T> universalSet)
     {
         Set<T> complementSet = new Set<T>();
@@ -95,7 +93,6 @@ public class Set<T>
         }
         return complementSet;
     }
-
     public static Set<T> EvaluateExpression(string expression, Dictionary<string, Set<T>> setDictionary)
     {
         string[] tokens = expression.Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -158,6 +155,28 @@ public class Set<T>
         }
         return productSet;
     }
+    public bool IsRelationReflexive(Set<(T, T)> relation)
+    {
+        foreach (T element in this.Elements)
+        {
+            if(!relation.Elements.Contains((element, element)))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    public static bool IsRelationSymmetric(Set<(T, T)> relation)
+    {
+        foreach ((T, T) pair in relation.Elements)
+        {
+            if (!relation.Elements.Contains((pair.Item2, pair.Item1)))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
     public bool IsRelationValid<T2>(List<(T, T2)> relation, Set<T2> setB)
     {
         Set<(T, T2)> cartesianProduct = this.CartesianProduct(setB);
@@ -213,7 +232,7 @@ public class Set<T>
     public override string ToString()
     {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.Append("[" + String.Join(_connectionCharacter, this.Elements) + "]");
+        stringBuilder.Append("[" + String.Join(CONNECTION_CHARACTER, this.Elements) + "]");
         return stringBuilder.ToString();
     }
 
@@ -233,6 +252,16 @@ public class Set<T>
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(Elements, _connectionCharacter);
+        return HashCode.Combine(Elements, CONNECTION_CHARACTER);
     }
+
+    //public IEnumerator<T> GetEnumerator()
+    //{
+    //    yield this.Elements.GetEnumerator();
+    //}
+
+    //IEnumerator IEnumerable.GetEnumerator()
+    //{
+    //    return GetEnumerator();
+    //}
 }

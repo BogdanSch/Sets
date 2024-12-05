@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿   using FluentAssertions;
 using System.Collections.Generic;
 
 namespace Sets.UnitTests.SetTests;
@@ -143,6 +143,43 @@ public class SetTests
         bool result = Set<int>.IsRelationSymmetric(relation);
 
         result.Should().BeTrue();
+    }
+    [Fact]
+    public void Set_IsRelationTransitive_ReturnBool()
+    {
+        Set<(int, int)> relation = new Set<(int, int)>(new List<(int, int)>
+            {(1, 2), (2, 3), (1, 3)}
+        );
+
+        bool result = Set<int>.IsRelationTransitive(relation);
+
+        result.Should().BeTrue();
+    }
+    [Fact]
+    public void Set_IsRelationEquivalent_ReturnBool()
+    {
+        Set<int> set = new Set<int>(new List<int> { 1, 2, 3 });
+        Set<(int, int)> relation = new Set<(int, int)>(new List<(int, int)>
+            {(1, 1), (2, 2), (3, 3), (1, 2), (2, 1), (2, 3), (3, 2)}
+        );
+
+        bool result = set.IsRelationEquivalent(relation);
+
+        result.Should().BeTrue();
+    }
+    [Fact]
+    public void Set_IsRelationInverse_ReturnBool()
+    {
+        Set<(int, int)> relation = new Set<(int, int)>(new List<(int, int)>
+            {(1, 2), (3, 4), (5, 6)}
+        );
+        Set<(int, int)> expectedResult = new Set<(int, int)>(new List<(int, int)>
+            {(2, 1), (4, 3), (6, 5)}
+        );
+
+        Set<(int, int)> result = relation.InverseRelation();
+
+        result.Should().BeEquivalentTo(expectedResult);
     }
     public static IEnumerable<object[]> ComplementTestData()
     {

@@ -155,11 +155,22 @@ public class Set<T>// : IEnumerable<T>
         }
         return productSet;
     }
+    public Set<T> InverseRelation() 
+    {
+        Set<T> inverseSet = new Set<T>();
+
+        foreach (var pair in this.Elements.Cast<(T, T)>())
+        { 
+            inverseSet.AddElement((pair.Item2, pair.Item1));
+        }
+
+        return inverseSet;
+    }
     public bool IsRelationReflexive(Set<(T, T)> relation)
     {
         foreach (T element in this.Elements)
         {
-            if(!relation.Elements.Contains((element, element)))
+            if (!relation.Elements.Contains((element, element)))
             {
                 return false;
             }
@@ -177,6 +188,28 @@ public class Set<T>// : IEnumerable<T>
         }
         return true;
     }
+    public static bool IsRelationTransitive(Set<(T, T)> relation)
+    {
+        foreach ((T a, T b) in relation.Elements)
+        {
+            foreach ((T c, T d) in relation.Elements)
+            {
+                if ((b.Equals(c)) &&
+                    !relation.Elements.Contains((a, d)))
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    public bool IsRelationEquivalent(Set<(T, T)> relation) {
+        bool isRelationReflexive = this.IsRelationReflexive(relation);
+        bool isRelationSymmetric = IsRelationSymmetric(relation);
+        bool isRelationTransitive = IsRelationTransitive(relation);
+
+        return isRelationReflexive && isRelationSymmetric && isRelationTransitive;
+    }
     public bool IsRelationValid<T2>(List<(T, T2)> relation, Set<T2> setB)
     {
         Set<(T, T2)> cartesianProduct = this.CartesianProduct(setB);
@@ -191,6 +224,7 @@ public class Set<T>// : IEnumerable<T>
 
         return true;
     }
+    
     public Set<(T, T)> FindRelations(Func<T, T, bool> relationFunc)
     {
         Set<(T, T)> relationSet = new Set<(T, T)>();

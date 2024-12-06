@@ -155,17 +155,6 @@ public class Set<T>// : IEnumerable<T>
         }
         return productSet;
     }
-    public Set<T> InverseRelation() 
-    {
-        Set<T> inverseSet = new Set<T>();
-
-        foreach (var pair in this.Elements.Cast<(T, T)>())
-        { 
-            inverseSet.AddElement((pair.Item2, pair.Item1));
-        }
-
-        return inverseSet;
-    }
     public bool IsRelationReflexive(Set<(T, T)> relation)
     {
         foreach (T element in this.Elements)

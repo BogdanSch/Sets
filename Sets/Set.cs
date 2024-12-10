@@ -155,7 +155,7 @@ public class Set<T>// : IEnumerable<T>
         }
         return productSet;
     }
-    public bool IsRelationReflexive(Set<(T, T)> relation)
+    public bool IsRelationReflexive(TupleSet<T> relation)
     {
         foreach (T element in this.Elements)
         {
@@ -166,7 +166,7 @@ public class Set<T>// : IEnumerable<T>
         }
         return true;
     }
-    public static bool IsRelationSymmetric(Set<(T, T)> relation)
+    public static bool IsRelationSymmetric(TupleSet<T> relation)
     {
         foreach ((T, T) pair in relation.Elements)
         {
@@ -177,7 +177,7 @@ public class Set<T>// : IEnumerable<T>
         }
         return true;
     }
-    public static bool IsRelationTransitive(Set<(T, T)> relation)
+    public static bool IsRelationTransitive(TupleSet<T> relation)
     {
         foreach ((T a, T b) in relation.Elements)
         {
@@ -194,7 +194,7 @@ public class Set<T>// : IEnumerable<T>
         }
         return true;
     }
-    public bool IsRelationEquivalent(Set<(T, T)> relation)
+    public bool IsRelationEquivalent(TupleSet<T> relation)
     {
         bool isRelationReflexive = this.IsRelationReflexive(relation);
         bool isRelationSymmetric = IsRelationSymmetric(relation);

@@ -123,7 +123,7 @@ public class SetTests
     public void Set_IsRelationReflexive_ReturnBool()
     {
         Set<int> set = new Set<int>(new List<int> { 1, 2, 3 });
-        Set<(int, int)> relation = new(new List<(int, int)>
+        TupleSet<int> relation = new TupleSet<int>(new List<(int, int)>
             {
                 (1, 1), (2, 2), (3, 3)
             });
@@ -135,7 +135,7 @@ public class SetTests
     [Fact]
     public void Set_IsRelationSymmetric_ReturnBool()
     {
-        Set<(int, int)> relation = new Set<(int, int)>(new List<(int, int)>
+        TupleSet<int> relation = new TupleSet<int>(new List<(int, int)>
             {(1, 2), (2, 1), (3, 3)}
         );
 
@@ -146,20 +146,24 @@ public class SetTests
     [Fact]
     public void Set_IsRelationTransitive_ReturnBool()
     {
-        Set<(int, int)> relation = new Set<(int, int)>(new List<(int, int)>
-            {(1, 2), (2, 3), (1, 3)}
+        TupleSet<int> relation = new TupleSet<int>(new List<(int, int)>
+        {(1, 2), (2, 3), (1, 3)}
         );
 
         bool result = Set<int>.IsRelationTransitive(relation);
 
         result.Should().BeTrue();
     }
+
     [Fact]
     public void Set_IsRelationEquivalent_ReturnBool()
     {
-        Set<int> set = new Set<int>(new List<int> { 1, 2, 3 });
-        Set<(int, int)> relation = new Set<(int, int)>(new List<(int, int)>
-            {(1, 1), (2, 2), (3, 3), (1, 2), (2, 1), (2, 3), (3, 2)}
+        Set<int> set = new Set<int>(new List<int> { 1, 2, 3, 4 });
+        //Set<(int, int)> relation = new Set<(int, int)>(new List<(int, int)>
+        //{(1, 1), (1, 3), (2, 2), (2, 4), (3, 1), (3, 3), (4, 2), (4, 4)}
+        //);
+        TupleSet<int> relation = new TupleSet<int>(new List<(int, int)>
+        {(1, 1), (1, 3), (2, 2), (2, 4), (3, 1), (3, 3), (4, 2), (4, 4)}
         );
 
         bool result = set.IsRelationEquivalent(relation);

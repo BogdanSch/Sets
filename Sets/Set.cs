@@ -183,16 +183,19 @@ public class Set<T>// : IEnumerable<T>
         {
             foreach ((T c, T d) in relation.Elements)
             {
-                if ((b.Equals(c)) &&
-                    !relation.Elements.Contains((a, d)))
+                if (b.Equals(c))
                 {
-                    return false;
+                    if (!relation.Elements.Contains((a, d)))
+                    {
+                        return false;
+                    }
                 }
             }
         }
         return true;
     }
-    public bool IsRelationEquivalent(Set<(T, T)> relation) {
+    public bool IsRelationEquivalent(Set<(T, T)> relation)
+    {
         bool isRelationReflexive = this.IsRelationReflexive(relation);
         bool isRelationSymmetric = IsRelationSymmetric(relation);
         bool isRelationTransitive = IsRelationTransitive(relation);

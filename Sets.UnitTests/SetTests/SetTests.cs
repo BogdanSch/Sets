@@ -36,7 +36,6 @@ public class SetTests
 
         result.Should().Be(new Set<int>(new List<int> { 1, 2 }));
     }
-
     [Theory]
     [MemberData(nameof(ComplementTestData))]
     public void Set_Complement_ReturnSet(Set<int> setA, Set<int> universalSet, Set<int> expectedSet)
@@ -44,7 +43,6 @@ public class SetTests
         Set<int> result = setA.Complement(universalSet);
         result.Should().Be(expectedSet);
     }
-
     [Fact]
     public void Set_EvaluateExpression_ReturnSet()
     {
@@ -117,19 +115,11 @@ public class SetTests
         });
         result.Should().BeEquivalentTo(expected);
     }
-    //[Theory]
-    //[MemberData(nameof(ComplementTestData))]
-    [Fact]
-    public void Set_IsRelationReflexive_ReturnBool()
+    [Theory]
+    [MemberData(nameof(IsReflexiveTestData))]
+    public void Set_IsRelationReflexive_ReturnBool(Set<int> set, TupleSet<int> relation)
     {
-        Set<int> set = new Set<int>(new List<int> { 1, 2, 3 });
-        TupleSet<int> relation = new TupleSet<int>(new List<(int, int)>
-            {
-                (1, 1), (2, 2), (3, 3)
-            });
-
         bool result = set.IsRelationReflexive(relation);
-
         result.Should().BeTrue();
     }
     [Fact]
@@ -154,22 +144,14 @@ public class SetTests
 
         result.Should().BeTrue();
     }
-
-    [Fact]
-    public void Set_IsRelationEquivalent_ReturnBool()
+    [Theory]
+    [MemberData(nameof(IsEquivalentTestData))]
+    public void Set_IsRelationEquivalent_ReturnBool(Set<int> set, TupleSet<int> relation)
     {
-        Set<int> set = new Set<int>(new List<int> { 1, 2, 3, 4 });
-        //Set<(int, int)> relation = new Set<(int, int)>(new List<(int, int)>
-        //{(1, 1), (1, 3), (2, 2), (2, 4), (3, 1), (3, 3), (4, 2), (4, 4)}
-        //);
-        TupleSet<int> relation = new TupleSet<int>(new List<(int, int)>
-        {(1, 1), (1, 3), (2, 2), (2, 4), (3, 1), (3, 3), (4, 2), (4, 4)}
-        );
-
         bool result = set.IsRelationEquivalent(relation);
-
         result.Should().BeTrue();
     }
+    
     public static IEnumerable<object[]> ComplementTestData()
     {
         yield return new object[]
@@ -177,6 +159,36 @@ public class SetTests
             new Set<int>(new List<int> { 1, 2, 3 }),
             new Set<int>(new List<int> { 1, 2, 3, 4, 5 }),
             new Set<int>(new List<int> { 4, 5 })
+        };
+    }
+    public static IEnumerable<object[]> IsReflexiveTestData()
+    {
+        yield return new object[]
+        {
+            new Set<int>(new List<int> { 1, 2, 3 }),
+            new TupleSet<int>(new List<(int, int)> { (1, 1), (2, 2), (3, 3)})
+        };
+        yield return new object[]
+        {
+            new Set<int>(new List<int> { 3, 4, 1 }),
+            new TupleSet<int>(new List<(int, int)> { (3, 3), (4, 4), (1, 1), (1, 23)})
+        };
+    }
+    public static IEnumerable<object[]> IsEquivalentTestData()
+    {
+        yield return new object[]
+        {
+            new Set<int>(new List<int> { 1, 2, 3, 4 }),
+            new TupleSet<int>(new List<(int, int)>
+                {(1, 1), (1, 3), (2, 2), (2, 4), (3, 1), (3, 3), (4, 2), (4, 4)}
+            )
+        };
+        yield return new object[]
+        {
+           new Set<int>(new List<int> {3, 4, 5}),
+           new TupleSet<int>(new List<(int, int)>
+                {(3, 3), (4, 4), (5, 5), (3, 5), (5, 3), (3, 4), (4, 5), (5, 4), (4, 3)}
+           )
         };
     }
 }

@@ -1,11 +1,9 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace Sets;
 
-public class Set<T>// : IEnumerable<T>
+public class Set<T>
 {
     public List<T> Elements { get; set; } = new List<T>();
     private readonly char CONNECTION_CHARACTER = ',';
@@ -280,14 +278,4 @@ public class Set<T>// : IEnumerable<T>
     {
         return HashCode.Combine(Elements, CONNECTION_CHARACTER);
     }
-
-    //public IEnumerator<T> GetEnumerator()
-    //{
-    //    yield this.Elements.GetEnumerator();
-    //}
-
-    //IEnumerator IEnumerable.GetEnumerator()
-    //{
-    //    return GetEnumerator();
-    //}
 }

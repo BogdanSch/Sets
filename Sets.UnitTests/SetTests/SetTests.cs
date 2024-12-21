@@ -151,7 +151,13 @@ public class SetTests
         bool result = set.IsRelationEquivalent(relation);
         result.Should().BeTrue();
     }
-    
+    [Theory]
+    [MemberData(nameof(InverseRelationTestData))]
+    public void Set_InverseRelation_ReturnTupleSet(Set<(int, int)> relation, Set<(int, int)> expectedResult)
+    {
+        Set<(int, int)> result = Set<int>.InverseRelation(relation);
+        result.Should().BeEquivalentTo(expectedResult);
+    }
     public static IEnumerable<object[]> ComplementTestData()
     {
         yield return new object[]
@@ -171,7 +177,7 @@ public class SetTests
         yield return new object[]
         {
             new Set<int>(new List<int> { 3, 4, 1 }),
-            new TupleSet<int>(new List<(int, int)> { (3, 3), (4, 4), (1, 1), (1, 23)})
+            new TupleSet<int>(new List<(int, int)> { (3, 3), (4, 4), (1, 1)})
         };
     }
     public static IEnumerable<object[]> IsEquivalentTestData()
@@ -189,6 +195,19 @@ public class SetTests
            new TupleSet<int>(new List<(int, int)>
                 {(3, 3), (4, 4), (5, 5), (3, 5), (5, 3), (3, 4), (4, 5), (5, 4), (4, 3)}
            )
+        };
+    }
+    public static IEnumerable<object[]> InverseRelationTestData()
+    {
+        yield return new object[]
+        {
+            new Set<(int, int)>(new List<(int, int)>  {(1, 2), (3, 4), (5, 6) }),
+            new Set<(int, int) >(new List<(int, int)> { (4, 3), (6, 5), (2, 1) })
+        };
+        yield return new object[]
+        {
+            new Set<(int, int) >(new List<(int, int)> {  (3, 3), (4, 4), (1, 1), (int.MaxValue, 0) }),
+            new Set<(int, int) >(new List<(int, int)> { (3, 3), (4, 4), (1, 1), (0, int.MaxValue) })
         };
     }
 }

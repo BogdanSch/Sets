@@ -200,6 +200,17 @@ public class Set<T>
 
         return isRelationReflexive && isRelationSymmetric && isRelationTransitive;
     }
+    public static Set<(T, T)> InverseRelation(Set<(T, T)> set)
+    {
+        Set<(T, T)> inverseSet = new Set<(T, T)>();
+
+        foreach (var pair in set.Elements)
+        {
+            inverseSet.AddElement((pair.Item2, pair.Item1));
+        }
+
+        return inverseSet;
+    }
     public bool IsRelationValid<T2>(List<(T, T2)> relation, Set<T2> setB)
     {
         Set<(T, T2)> cartesianProduct = this.CartesianProduct(setB);

@@ -153,7 +153,7 @@ public class Set<T>
         }
         return productSet;
     }
-    public bool IsRelationReflexive(TupleSet<T> relation)
+    public bool IsRelationReflexive(Set<(T, T)> relation)
     {
         foreach (T element in this.Elements)
         {
@@ -164,7 +164,7 @@ public class Set<T>
         }
         return true;
     }
-    public static bool IsRelationSymmetric(TupleSet<T> relation)
+    public static bool IsRelationSymmetric(Set<(T, T)> relation)
     {
         foreach ((T, T) pair in relation.Elements)
         {
@@ -175,7 +175,7 @@ public class Set<T>
         }
         return true;
     }
-    public static bool IsRelationTransitive(TupleSet<T> relation)
+    public static bool IsRelationTransitive(Set<(T, T)> relation)
     {
         foreach ((T a, T b) in relation.Elements)
         {
@@ -192,13 +192,28 @@ public class Set<T>
         }
         return true;
     }
-    public bool IsRelationEquivalent(TupleSet<T> relation)
+    public bool IsRelationEquivalent(Set<(T, T)> relation)
     {
         bool isRelationReflexive = this.IsRelationReflexive(relation);
-        bool isRelationSymmetric = IsRelationSymmetric(relation);
+        bool isRelationSymmetric = IsRelationSymmetric(relation); 
         bool isRelationTransitive = IsRelationTransitive(relation);
 
         return isRelationReflexive && isRelationSymmetric && isRelationTransitive;
+    }
+    public (Set<(T, T)>, Dictionary<string, bool>) GenerateAndValidateRelations(Func<T, T, bool> relationCondition)
+    {
+        Set<(T, T)> relationSet = FilteredCartesianProduct(this, relationCondition);
+
+        bool isReflexive = IsRelationReflexive(relationSet);
+        bool isSymmetric = IsRelationSymmetric(relationSet);
+        bool isTransitive = IsRelationTransitive(relationSet);
+
+        return (relationSet, new Dictionary<string, bool>
+        {
+            { "Reflexive", isReflexive },
+            { "Symmetric", isSymmetric },
+            { "Transitive", isTransitive }
+        });
     }
     public static Set<(T, T)> InverseRelation(Set<(T, T)> set)
     {
@@ -254,10 +269,6 @@ public class Set<T>
                 if (filterFunc(elementA, elementB))
                 {
                     relationSet.AddElement((elementA, elementB));
-                }
-                else
-                {
-                    break;
                 }
             }
         }

@@ -14,7 +14,6 @@ public class SetTests
 
         result.Should().Be(new Set<int>(new List<int> { 1, 2, 3, 4, 5 }));
     }
-
     [Fact]
     public void Set_Intersection_ReturnSet()
     {
@@ -25,7 +24,6 @@ public class SetTests
 
         result.Should().Be(new Set<int>(new List<int> { 3 }));
     }
-
     [Fact]
     public void Set_Difference_ReturnSet()
     {
@@ -117,7 +115,7 @@ public class SetTests
     }
     [Theory]
     [MemberData(nameof(IsReflexiveTestData))]
-    public void Set_IsRelationReflexive_ReturnBool(Set<int> set, TupleSet<int> relation)
+    public void Set_IsRelationReflexive_ReturnBool(Set<int> set, Set<(int, int)> relation)
     {
         bool result = set.IsRelationReflexive(relation);
         result.Should().BeTrue();
@@ -125,7 +123,7 @@ public class SetTests
     [Fact]
     public void Set_IsRelationSymmetric_ReturnBool()
     {
-        TupleSet<int> relation = new TupleSet<int>(new List<(int, int)>
+        Set<(int, int)> relation = new Set<(int, int)>(new List<(int, int)>
             {(1, 2), (2, 1), (3, 3)}
         );
 
@@ -136,7 +134,7 @@ public class SetTests
     [Fact]
     public void Set_IsRelationTransitive_ReturnBool()
     {
-        TupleSet<int> relation = new TupleSet<int>(new List<(int, int)>
+        Set<(int, int)> relation = new Set<(int, int)>(new List<(int, int)>
         {(1, 2), (2, 3), (1, 3)}
         );
 
@@ -146,14 +144,14 @@ public class SetTests
     }
     [Theory]
     [MemberData(nameof(IsEquivalentTestData))]
-    public void Set_IsRelationEquivalent_ReturnBool(Set<int> set, TupleSet<int> relation)
+    public void Set_IsRelationEquivalent_ReturnBool(Set<int> set, Set<(int, int)> relation)
     {
         bool result = set.IsRelationEquivalent(relation);
         result.Should().BeTrue();
     }
     [Theory]
     [MemberData(nameof(InverseRelationTestData))]
-    public void Set_InverseRelation_ReturnTupleSet(Set<(int, int)> relation, Set<(int, int)> expectedResult)
+    public void Set_InverseRelation_ReturnSet(Set<(int, int)> relation, Set<(int, int)> expectedResult)
     {
         Set<(int, int)> result = Set<int>.InverseRelation(relation);
         result.Should().BeEquivalentTo(expectedResult);
@@ -172,12 +170,12 @@ public class SetTests
         yield return new object[]
         {
             new Set<int>(new List<int> { 1, 2, 3 }),
-            new TupleSet<int>(new List<(int, int)> { (1, 1), (2, 2), (3, 3)})
+            new Set<(int, int)>(new List<(int, int)> { (1, 1), (2, 2), (3, 3)})
         };
         yield return new object[]
         {
             new Set<int>(new List<int> { 3, 4, 1 }),
-            new TupleSet<int>(new List<(int, int)> { (3, 3), (4, 4), (1, 1)})
+            new Set<(int, int)>(new List<(int, int)> { (3, 3), (4, 4), (1, 1)})
         };
     }
     public static IEnumerable<object[]> IsEquivalentTestData()
@@ -185,14 +183,14 @@ public class SetTests
         yield return new object[]
         {
             new Set<int>(new List<int> { 1, 2, 3, 4 }),
-            new TupleSet<int>(new List<(int, int)>
+            new Set <(int, int) >(new List<(int, int)>
                 {(1, 1), (1, 3), (2, 2), (2, 4), (3, 1), (3, 3), (4, 2), (4, 4)}
             )
         };
         yield return new object[]
         {
            new Set<int>(new List<int> {3, 4, 5}),
-           new TupleSet<int>(new List<(int, int)>
+           new Set<(int, int) >(new List<(int, int)>
                 {(3, 3), (4, 4), (5, 5), (3, 5), (5, 3), (3, 4), (4, 5), (5, 4), (4, 3)}
            )
         };

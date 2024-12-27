@@ -12,22 +12,18 @@ public class Set<T>
     {
         Elements = elements;
     }
-
     public Set(T[] elements)
     {
         CreateSet(elements);
     }
-
     public Set() : this(new List<T>()) { }
 
     public bool ContainsElement(T element) => Elements.Contains(element);
-
     public void CreateSet(T[] elements)
     {
         Elements = new List<T>();
         AddElements(elements);
     }
-
     public void AddElement(T elementToAdd)
     {
         if (!ContainsElement(elementToAdd))
@@ -35,7 +31,6 @@ public class Set<T>
             Elements.Add(elementToAdd);
         }
     }
-
     public void AddElements(T[] elementsToAdd)
     {
         foreach (var element in elementsToAdd)
@@ -144,7 +139,7 @@ public class Set<T>
     public Set<(T, T2)> CartesianProduct<T2>(Set<T2> otherSet)
     {
         Set<(T, T2)> productSet = new Set<(T, T2)>();
-        foreach (T elementA in this.Elements)
+        foreach (T elementA in Elements)
         {
             foreach (T2 elementB in otherSet.Elements)
             {
@@ -169,6 +164,17 @@ public class Set<T>
         foreach ((T, T) pair in relation.Elements)
         {
             if (!relation.Elements.Contains((pair.Item2, pair.Item1)))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    public static bool IsRelationAntisymmetric(Set<(T, T)> relation)
+    {
+        foreach ((T x, T y) in relation.Elements)
+        {
+            if (relation.Elements.Contains((y, x)) && (!x.Equals(y)))
             {
                 return false;
             }
@@ -206,13 +212,16 @@ public class Set<T>
 
         bool isReflexive = IsRelationReflexive(relationSet);
         bool isSymmetric = IsRelationSymmetric(relationSet);
+        bool isAntisymmetric = IsRelationAntisymmetric(relationSet);    
         bool isTransitive = IsRelationTransitive(relationSet);
 
         return (relationSet, new Dictionary<string, bool>
         {
             { "Reflexive", isReflexive },
             { "Symmetric", isSymmetric },
-            { "Transitive", isTransitive }
+            { "Antisymmetric", isAntisymmetric },
+            { "Transitive", isTransitive },
+            { "Equivalence", (isReflexive && isSymmetric && isTransitive) }
         });
     }
     public static Set<(T, T)> InverseRelation(Set<(T, T)> set)

@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using System.Collections.Generic;
 
 namespace Sets.UnitTests.SetTests;
 
@@ -109,7 +110,7 @@ public class SetTests
 
         Set<(int, int)> expected = new Set<(int, int)>(new List<(int, int)>
         {
-            (1, 3), (1, 4), (1, 5), (2, 3), (2, 4), (2, 5)
+            (1, 3),(1, 4),(1, 5),(2, 3),(2, 4),(2, 5),(3, 4),(3, 5)
         });
         result.Should().BeEquivalentTo(expected);
     }
@@ -128,6 +129,14 @@ public class SetTests
         );
 
         bool result = Set<int>.IsRelationSymmetric(relation);
+
+        result.Should().BeTrue();
+    }
+    [Theory]
+    [MemberData(nameof(IsAntisymmetricTestData))]
+    public void Set_IsRelationAntisymmetric_ReturnBool(Set<(int, int)> relation)
+    {
+        bool result = Set<int>.IsRelationAntisymmetric(relation);
 
         result.Should().BeTrue();
     }
@@ -176,6 +185,17 @@ public class SetTests
         {
             new Set<int>(new List<int> { 3, 4, 1 }),
             new Set<(int, int)>(new List<(int, int)> { (3, 3), (4, 4), (1, 1)})
+        };
+    }
+    public static IEnumerable<object[]> IsAntisymmetricTestData()
+    {
+        yield return new object[]
+        {
+            new Set<(int, int)>(new List<(int, int)> {(1, 1), (1, 2), (2, 2), (3, 3)} )
+        };
+        yield return new object[]
+        {
+            new Set<(int, int)>(new List<(int, int)> {(1, 1), (2, 2), (3, 3), (4, 2)} )
         };
     }
     public static IEnumerable<object[]> IsEquivalentTestData()

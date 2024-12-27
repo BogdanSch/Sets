@@ -5,7 +5,7 @@ public class Program
     private static void Main(string[] args)
     {
         Set<int> set = new Set<int>(new List<int> { 1, 2, 3 });
-        Func<int, int, bool> relationCondition = (a, b) => a >= b;
+        Func<int, int, bool> relationCondition = (a, b) => a > b;
 
         var (relationSet, properties) = set.GenerateAndValidateRelations(relationCondition);
 

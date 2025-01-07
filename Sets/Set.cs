@@ -74,6 +74,28 @@ public class Set<T>
         }
         return differenceSet;
     }
+    public Set<T> SymmetricDifference(Set<T> otherSet)
+    {
+        Set<T> symmetricDifferenceSet = new Set<T>();
+
+        foreach (T element in Elements)
+        {
+            if (!otherSet.ContainsElement(element))
+            {
+                symmetricDifferenceSet.AddElement(element);
+            }
+        }
+
+        foreach (T otherSetElement in otherSet.Elements)
+        {
+            if (!ContainsElement(otherSetElement))
+            {
+                symmetricDifferenceSet.AddElement(otherSetElement);
+            }
+        }
+
+        return symmetricDifferenceSet;
+    }
     public Set<T> Complement(Set<T> universalSet)
     {
         Set<T> complementSet = new Set<T>();
@@ -271,7 +293,7 @@ public class Set<T>
     {
         Set<(T, T)> relationSet = new Set<(T, T)>();
 
-        foreach (T elementA in this.Elements)
+        foreach (T elementA in Elements)
         {
             foreach (T elementB in otherSet.Elements)
             {
